@@ -1,0 +1,102 @@
+name: Release
+
+on:
+    pull_request:
+    push:
+
+permissions:
+    contents: write
+    id-token: write
+    packages: write
+
+jobs:
+    lint:
+        name: Lint
+        runs-on: ubuntu-latest
+        steps:
+            -   uses: actions/checkout@v4
+            -   name: Set up Go
+                uses: actions/setup-go@v5
+                with:
+                    go-version-file: 'go.mod'
+            -   name: golangci-lint
+                uses: golangci/golangci-lint-action@v8
+                with:
+                    only-new-issues: true
+
+    releaser:
+        name: Release
+        runs-on: ubuntu-latest
+        steps:
+            -   name: Checkout
+                uses: actions/checkout@v4
+                with:
+                    fetch-depth: 0
+
+            -   name: Set up Go
+                uses: actions/setup-go@v5
+                with:
+                    go-version-file: 'go.mod'
+
+            -   name: Set AUTOUPDATE_CHANNEL on tags
+                run: echo "AUTOUPDATE_CHANNEL=stable" >> $GITHUB_ENV
+                if: startsWith(github.ref, 'refs/tags/v')
+
+            -   name: Prepare
+                run: go generate ./...
+
+            -   name: Check Git status
+                id: git
+                run: |
+                    RESULT=$(git status --untracked-files=no --porcelain)
+                    echo "gitstatus=$RESULT" >> $GITHUB_OUTPUT
+
+            -   name: Check if go prepare updated generated Go code
+                if: steps.git.outputs.gitstatus != '' && startsWith(github.ref, 'refs/tags/v')
+                run: |
+                    echo '"go generate" changed some Go generated code, run "go generate ./" locally and make a Pull Request with the changes'
+                    git diff
+                    exit 1
+
+            #-   name: Test
+            #    run: go test -v ./...
+
+            -   name: Validate build
+                run: go run .
+
+            #-   name: Set up cosign
+            #    uses: sigstore/cosign-installer@v3
+
+            -   name: Run GoReleaser for snapshot
+                uses: goreleaser/goreleaser-action@v6
+                # only for PRs and push on branches
+                if: ${{ !startsWith(github.ref, 'refs/tags/v') }}
+                with:
+                    version: '~> v2'
+                    args: release --clean --snapshot --skip=publish,sign
+                env:
+                    GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+            -   name: Run GoReleaser
+                uses: goreleaser/goreleaser-action@v6
+                # only for tags
+                if: startsWith(github.ref, 'refs/tags/v')
+                with:
+                    version: '~> v2'
+                    args: release --clean
+                env:
+                    GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+            -   name: Archive binaries
+                uses: actions/upload-artifact@v4
+                with:
+                    retention-days: 5
+                    name: binaries
+                    path: dist
+
+            -   name: Archive Linux binary
+                uses: actions/upload-artifact@v4
+                with:
+                    retention-days: 5
+                    name: linux-binary
+                    path: dist/kyx_linux_amd64.tar.gz
