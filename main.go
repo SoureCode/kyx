@@ -10,7 +10,6 @@ import (
 	"github.com/SoureCode/kyx/tools"
 	"github.com/pkg/errors"
 	"github.com/symfony-cli/console"
-	"github.com/symfony-cli/dumper"
 )
 
 var (
@@ -52,8 +51,6 @@ func main() {
 		Copyright: fmt.Sprintf("(c) 2025-%d Jason Schilling", time.Now().Year()),
 		Commands:  cmds,
 		Action: func(ctx *console.Context) error {
-			dumper.Dump("dumper-keep-it-as-it-will-be-removed-by-go-mod-tidy")
-
 			if ctx.Args().Len() == 0 {
 				return commands.WelcomeAction(ctx)
 			}
