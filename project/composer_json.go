@@ -3,6 +3,8 @@ package project
 import (
 	"encoding/json"
 	"os"
+
+	"github.com/pkg/errors"
 )
 
 type composerJson struct {
@@ -38,12 +40,12 @@ func loadComposerJson(path string) (*composerJson, error) {
 	file, err := os.ReadFile(path)
 
 	if err != nil {
-		return nil, err
+		return nil, errors.Wrap(err, "failed to read file")
 	}
 
 	var composerData composerJson
 	if err := json.Unmarshal(file, &composerData); err != nil {
-		return nil, err
+		return nil, errors.Wrap(err, "failed to unmarshal composer.json")
 	}
 
 	return &composerData, nil

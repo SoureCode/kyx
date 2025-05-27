@@ -23,7 +23,7 @@ func CreateCommand(name string) *console.Command {
 func GetCommands(mapping Mapping) []*console.Command {
 	commands := make([]*console.Command, 0)
 
-	for name, _ := range mapping {
+	for name := range mapping {
 		commands = append(commands, CreateCommand(name))
 	}
 

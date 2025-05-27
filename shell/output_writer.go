@@ -5,6 +5,8 @@ import (
 	"io"
 	"strings"
 	"sync"
+
+	"github.com/pkg/errors"
 )
 
 type OutputWriter struct {
@@ -27,7 +29,7 @@ func (ow *OutputWriter) Write(p []byte) (int, error) {
 
 	n, err := ow.buffer.Write(p)
 	if err != nil {
-		return n, err
+		return n, errors.Wrap(err, "failed to write to buffer")
 	}
 	// Mirror to lineBuf for line splitting
 	_, _ = ow.lineBuf.Write(p)

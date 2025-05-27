@@ -1,10 +1,11 @@
 package shell
 
 import (
-	"github.com/SoureCode/kyx/project"
-	"github.com/pkg/errors"
 	"os/exec"
 	"path/filepath"
+
+	"github.com/SoureCode/kyx/project"
+	"github.com/pkg/errors"
 )
 
 var (

@@ -1,9 +1,11 @@
 package project
 
 import (
-	"github.com/SoureCode/kyx/env"
 	"path/filepath"
 	"slices"
+
+	"github.com/SoureCode/kyx/env"
+	"github.com/pkg/errors"
 )
 
 var singletonProject *Project
@@ -42,7 +44,7 @@ func newProject(directory string) (*Project, error) {
 	environment, err := env.NewEnvironment(directory)
 
 	if err != nil {
-		return nil, err
+		return nil, errors.Wrap(err, "failed to load environment")
 	}
 
 	return &Project{

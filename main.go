@@ -2,14 +2,15 @@ package main
 
 import (
 	"fmt"
+	"os"
+	"slices"
+	"time"
+
 	"github.com/SoureCode/kyx/commands"
 	"github.com/SoureCode/kyx/tools"
 	"github.com/pkg/errors"
 	"github.com/symfony-cli/console"
 	"github.com/symfony-cli/dumper"
-	"os"
-	"slices"
-	"time"
 )
 
 var (

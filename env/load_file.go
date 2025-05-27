@@ -1,10 +1,11 @@
 package env
 
 import (
-	"github.com/joho/godotenv"
-	"github.com/pkg/errors"
 	"os"
 	"path/filepath"
+
+	"github.com/joho/godotenv"
+	"github.com/pkg/errors"
 )
 
 func loadFile(envMap map[string]string, directory string, filename string) error {

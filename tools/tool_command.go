@@ -1,8 +1,9 @@
 package tools
 
 import (
-	"github.com/SoureCode/kyx/shell"
 	"path/filepath"
+
+	"github.com/SoureCode/kyx/shell"
 )
 
 func NewToolCommand(toolName string, mapping Mapping, args ...string) *shell.Command {

@@ -1,11 +1,12 @@
 package macro
 
 import (
+	"os"
+	"path/filepath"
+
 	"github.com/SoureCode/kyx/project"
 	"github.com/SoureCode/kyx/shell"
 	"github.com/pkg/errors"
-	"os"
-	"path/filepath"
 )
 
 func anyFileExists(filenames ...string) bool {

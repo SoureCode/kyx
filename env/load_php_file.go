@@ -2,12 +2,13 @@ package env
 
 import (
 	"fmt"
-	"github.com/joho/godotenv"
-	"github.com/pkg/errors"
 	"io"
 	"os"
 	"os/exec"
 	"path/filepath"
+
+	"github.com/joho/godotenv"
+	"github.com/pkg/errors"
 )
 
 func loadPHPFile(envMap map[string]string, directory string, filename string) error {

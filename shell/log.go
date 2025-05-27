@@ -79,7 +79,7 @@ func (l *Logger) getDelta(t time.Time) string {
 func (l *Logger) LogDuration() {
 	now := l.now()
 	d := now.Sub(firstTimestamp)
-	
+
 	l.Logln("Total duration: ", d.String())
 }
 

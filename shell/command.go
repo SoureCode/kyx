@@ -2,14 +2,15 @@ package shell
 
 import (
 	"fmt"
-	"github.com/SoureCode/kyx/project"
-	"github.com/pkg/errors"
 	"io"
 	"os"
 	"os/exec"
 	"os/signal"
 	"strings"
 	"syscall"
+
+	"github.com/SoureCode/kyx/project"
+	"github.com/pkg/errors"
 )
 
 type Command struct {

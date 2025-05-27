@@ -3,6 +3,8 @@ package git
 import (
 	"os/exec"
 	"path/filepath"
+
+	"github.com/pkg/errors"
 )
 
 // RootDirectory tries to find the git root directory from the given path.
@@ -12,7 +14,7 @@ func RootDirectory(startDir string) (string, error) {
 	out, err := cmd.Output()
 
 	if err != nil {
-		return "", err
+		return "", errors.Wrapf(err, "failed to read git root directory")
 	}
 
 	return string(filepath.Clean(string(out[:len(out)-1]))), nil

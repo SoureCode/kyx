@@ -1,10 +1,11 @@
 package macro
 
 import (
+	"path/filepath"
+
 	"github.com/SoureCode/kyx/project"
 	"github.com/SoureCode/kyx/shell"
 	"github.com/pkg/errors"
-	"path/filepath"
 )
 
 func DockerComposeDown() {

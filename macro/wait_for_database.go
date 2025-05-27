@@ -1,10 +1,11 @@
 package macro
 
 import (
+	"time"
+
 	"github.com/SoureCode/kyx/project"
 	"github.com/SoureCode/kyx/shell"
 	"github.com/pkg/errors"
-	"time"
 )
 
 func WaitForDatabase() {

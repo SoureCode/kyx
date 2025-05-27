@@ -2,10 +2,11 @@ package project
 
 import (
 	"fmt"
-	"github.com/SoureCode/kyx/git"
-	"github.com/pkg/errors"
 	"os"
 	"path/filepath"
+
+	"github.com/SoureCode/kyx/git"
+	"github.com/pkg/errors"
 )
 
 func getDirectory() string {

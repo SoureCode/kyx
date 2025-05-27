@@ -1,9 +1,10 @@
 package tools
 
 import (
-	"github.com/SoureCode/kyx/project"
 	"os"
 	"path/filepath"
+
+	"github.com/SoureCode/kyx/project"
 )
 
 func GetDirectory() string {

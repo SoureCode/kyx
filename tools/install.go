@@ -1,12 +1,13 @@
 package tools
 
 import (
-	"github.com/pkg/errors"
-	"github.com/symfony-cli/terminal"
 	"io"
 	"net/http"
 	"os"
 	"path/filepath"
+
+	"github.com/pkg/errors"
+	"github.com/symfony-cli/terminal"
 )
 
 func install(name string, mapping Mapping) string {
