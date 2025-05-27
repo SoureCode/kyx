@@ -24,3 +24,11 @@ echo 'eval "$(kyx self:completion bash)"' >> ~/.bashrc
 # Reload your shell configuration
 source ~/.bashrc
 ```
+
+## Update
+
+To update `kyx`, you can run the following command:
+
+```bash
+curl -L https://github.com/SoureCode/kyx/releases/latest/download/kyx_linux_amd64.tar.gz | sudo tar xz --no-same-owner -C /opt/kyx
+```
