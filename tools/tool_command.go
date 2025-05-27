@@ -11,5 +11,5 @@ func NewToolCommand(toolName string, mapping Mapping, args ...string) *shell.Com
 	install(toolName, mapping)
 	toolBinary := filepath.Join(directory, toolName)
 
-	return shell.NewPHPCommand(append([]string{toolBinary}, args...)...)
+	return shell.NewPHPCommand(append([]string{toolBinary}, args...)...).WithPassthrough()
 }
