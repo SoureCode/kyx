@@ -20,6 +20,7 @@ func NewOutputWriter() *OutputWriter {
 	ow := &OutputWriter{
 		Lines: make(chan string, 100), // buffer to avoid blocking
 	}
+
 	return ow
 }
 
@@ -43,7 +44,7 @@ func (ow *OutputWriter) Write(p []byte) (int, error) {
 		}
 		// Remove trailing '\n' (and '\r' for Windows CRLF)
 		line = strings.TrimRight(line, "\r\n")
-		ow.Lines <- "> " + line
+		ow.Lines <- line
 	}
 
 	return n, nil

@@ -14,16 +14,17 @@ import (
 )
 
 type Command struct {
-	binary   string
-	args     []string
-	stdin    io.Reader
-	stdout   *OutputWriter
-	stderr   *OutputWriter
-	project  *project.Project
-	exitCode int
-	executed bool
-	logger   *Logger
-	print    bool
+	binary      string
+	args        []string
+	stdin       io.Reader
+	stdout      *OutputWriter
+	stderr      *OutputWriter
+	project     *project.Project
+	exitCode    int
+	executed    bool
+	logger      *Logger
+	print       bool
+	passthrough bool
 }
 
 func (e *Command) Execute() {
@@ -35,29 +36,43 @@ func (e *Command) Execute() {
 
 	if e.logger != nil {
 		e.logger.Logln("Executing command: ", e.binary, " ", strings.Join(e.args, " "))
-
-		go func() {
-			for line := range e.stdout.Lines {
-				if e.print {
-					e.logger.Logln(line)
-				}
-			}
-		}()
-
-		go func() {
-			for line := range e.stderr.Lines {
-				if e.print {
-					e.logger.Logln(line)
-				}
-			}
-		}()
 	}
+
+	go func() {
+		for line := range e.stdout.Lines {
+			if e.print {
+				if e.logger != nil {
+					e.logger.Logln(" >" + line)
+				} else {
+					fmt.Println(line)
+				}
+			}
+		}
+	}()
+
+	go func() {
+		for line := range e.stderr.Lines {
+			if e.print {
+				if e.logger != nil {
+					e.logger.Logln(" >" + line)
+				} else {
+					fmt.Println(line)
+				}
+			}
+		}
+	}()
 
 	cmd := exec.Command(e.binary, e.args...)
 	cmd.Stdin = e.stdin
 	cmd.Stdout = e.stdout
 	cmd.Stderr = e.stderr
 	cmd.Dir = e.project.GetDirectory()
+
+	if e.passthrough {
+		cmd.Stdout = os.Stdout
+		cmd.Stderr = os.Stderr
+		cmd.Stdin = os.Stdin
+	}
 
 	env := e.project.GetEnvironment()
 	environ := append(os.Environ(), env.Environ()...)
@@ -129,6 +144,11 @@ func NewCommand(binary string) *Command {
 		logger:   nil,
 		print:    false,
 	}
+}
+
+func (e *Command) WithPassthrough() *Command {
+	e.passthrough = true
+	return e
 }
 
 func (e *Command) WithArgs(args ...string) *Command {
