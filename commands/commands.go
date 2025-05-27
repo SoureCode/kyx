@@ -18,5 +18,6 @@ func GetCommands() []*console.Command {
 		startCommand,
 		stopCommand,
 		resetCommand,
+		deploymentCommand,
 	}
 }
