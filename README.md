@@ -13,3 +13,14 @@ curl -L https://github.com/SoureCode/kyx/releases/latest/download/kyx_linux_amd6
 sudo ln -s /opt/kyx/kyx /usr/local/bin/kyx
 kyx --help
 ```
+
+## Autocompletion
+
+You can enable autocompletion for `kyx` by running the following command:
+
+```bash
+echo 'eval "$(kyx self:completion bash)"' >> ~/.bashrc
+
+# Reload your shell configuration
+source ~/.bashrc
+```
