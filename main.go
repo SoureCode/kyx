@@ -3,10 +3,13 @@ package main
 import (
 	"fmt"
 	"os"
+	"path/filepath"
 	"slices"
 	"time"
 
 	"github.com/SoureCode/kyx/commands"
+	"github.com/SoureCode/kyx/project"
+	"github.com/SoureCode/kyx/shell"
 	"github.com/SoureCode/kyx/tools"
 	"github.com/pkg/errors"
 	"github.com/symfony-cli/console"
@@ -31,6 +34,7 @@ var (
 
 func main() {
 	cmds := append(commands.GetCommands(), tools.GetCommands(toolsMapping)...)
+	cmds = append(cmds, tools.CreateCommand("test"))
 	toolNames := tools.GetNames(toolsMapping)
 
 	args := os.Args
@@ -41,6 +45,33 @@ func main() {
 		if err := cmd.Run(); err != nil {
 			fmt.Fprintf(os.Stderr, "Error executing command for tool %s: %v\n", args[1], err)
 			os.Exit(cmd.ExitCode())
+		}
+
+		os.Exit(0)
+	}
+
+	if len(args) >= 2 && args[1] == "test" {
+		p := project.GetProject()
+		pd := p.GetDirectory()
+
+		if p.HasDevDependency("symfony/phpunit-bridge") {
+			cmd := shell.NewPHPCommand(append([]string{filepath.Join(pd, "vendor", "bin", "simple-phpunit")}, args[2:]...)...).WithPassthrough()
+
+			if err := cmd.Run(); err != nil {
+				fmt.Fprintf(os.Stderr, "Error executing simple-phpunit: %v\n", err)
+				os.Exit(cmd.ExitCode())
+			}
+
+			os.Exit(0)
+		} else if p.HasDevDependency("phpunit/phpunit") {
+			cmd := shell.NewPHPCommand(append([]string{filepath.Join(pd, "vendor", "bin", "phpunit")}, args[2:]...)...).WithPassthrough()
+
+			if err := cmd.Run(); err != nil {
+				fmt.Fprintf(os.Stderr, "Error executing phpunit: %v\n", err)
+				os.Exit(cmd.ExitCode())
+			}
+
+			os.Exit(0)
 		}
 
 		os.Exit(0)
