@@ -74,7 +74,9 @@ func main() {
 			os.Exit(0)
 		}
 
-		os.Exit(0)
+		// very informative and helpful error message
+		fmt.Fprintf(os.Stderr, "No test runner found. Please install either symfony/phpunit-bridge or phpunit/phpunit as a dev dependency.\n")
+		os.Exit(1)
 	}
 
 	app := &console.Application{
