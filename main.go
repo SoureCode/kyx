@@ -25,6 +25,7 @@ var (
 		"infection":                "https://github.com/infection/infection/releases/latest/download/infection.phar",
 		"composer-require-checker": "https://github.com/maglnet/ComposerRequireChecker/releases/latest/download/composer-require-checker.phar",
 		"composer-normalize":       "https://github.com/ergebnis/composer-normalize/releases/latest/download/composer-normalize.phar",
+		"composer-unused":          "https://github.com/composer-unused/composer-unused/releases/latest/download/composer-unused.phar",
 	}
 )
 
