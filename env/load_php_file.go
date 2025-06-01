@@ -2,7 +2,6 @@ package env
 
 import (
 	"fmt"
-	"io"
 	"os"
 	"os/exec"
 	"path/filepath"
@@ -35,13 +34,6 @@ func loadPHPFile(envMap map[string]string, directory string, filename string) er
 	if err != nil {
 		return errors.Wrapf(err, "failed to create stdout pipe for reading %s", filePath)
 	}
-
-	defer func(stdout io.ReadCloser) {
-		err := stdout.Close()
-		if err != nil {
-			panic(errors.Wrapf(err, "failed to close stdout pipe for %s", filePath))
-		}
-	}(stdout)
 
 	if err := cmd.Start(); err != nil {
 		return errors.Wrapf(err, "failed to start command for reading %s", filePath)
