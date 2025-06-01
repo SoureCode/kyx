@@ -7,6 +7,7 @@ import (
 )
 
 func ComposerInstall(args ...string) {
+	logger := shell.GetLogger()
 	p := project.GetProject()
 	env := p.GetEnvironment()
 
@@ -20,7 +21,7 @@ func ComposerInstall(args ...string) {
 
 	cmd := shell.NewComposerCommand(args...)
 
-	if err := cmd.Run(); err != nil {
+	if err := cmd.WithLogger(logger).Run(); err != nil {
 		panic(errors.Wrap(err, "failed to execute composer install command"))
 	}
 }
