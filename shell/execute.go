@@ -56,7 +56,7 @@ func NewConsoleCommand(args ...string) *Command {
 
 	consoleFilePath := filepath.Join(pd, "bin", "console")
 
-	return NewPHPCommand(consoleFilePath)
+	return NewPHPCommand(append([]string{consoleFilePath}, args...)...)
 }
 
 func NewComposerCommand(args ...string) *Command {
