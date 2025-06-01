@@ -13,7 +13,7 @@ func SymfonySchemaUpdate() {
 	if p.HasDependency("doctrine/doctrine-bundle") {
 		cmd := shell.NewConsoleCommand("doctrine:schema:update", "--dump-sql", "--no-interaction")
 
-		if err := cmd.WithLogger(logger).WithPrintOutput(true).Run(); err != nil {
+		if err := cmd.WithLogger(logger).WithLogLevel(3).Run(); err != nil {
 			panic(errors.Wrap(err, "failed to execute command to dump schema"))
 		}
 

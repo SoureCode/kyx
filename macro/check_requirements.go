@@ -17,8 +17,8 @@ func CheckRequirements() {
 		if p.HasDependency("symfony/requirements-checker") {
 			cmd := shell.NewPHPCommand(filepath.Join(p.GetDirectory(), "vendor", "bin", "requirements-checker"))
 
-			if err := cmd.WithLogger(logger).WithPrintOutput(true).Run(); err != nil {
-				logger.Logln(" [ERROR]")
+			if err := cmd.WithLogger(logger).WithLogLevel(0).Run(); err != nil {
+				logger.Errorln(" [ERROR]")
 				panic(errors.Wrap(err, "failed to execute requirements-checker command"))
 			}
 		}
@@ -29,7 +29,7 @@ func CheckRequirements() {
 			panic(errors.Wrap(err, "failed to create symfony check:requirements command"))
 		}
 
-		if err := cmd.WithLogger(logger).WithPrintOutput(true).Run(); err != nil {
+		if err := cmd.WithLogger(logger).WithLogLevel(0).Run(); err != nil {
 			panic(errors.Wrap(err, "failed to execute symfony check:requirements command"))
 		}
 	}

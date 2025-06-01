@@ -22,8 +22,8 @@ type Command struct {
 	project     *project.Project
 	exitCode    int
 	executed    bool
-	logger      *Logger
-	print       bool
+	logger      *BaseLogger
+	logLevel    int // 1: error, 2: warning, 3: info, 4: debug (default), 5: trace
 	passthrough bool
 }
 
@@ -38,30 +38,6 @@ func (e *Command) Execute() {
 		e.logger.Logln("Executing command: ", e.binary, " ", strings.Join(e.args, " "))
 	}
 
-	go func() {
-		for line := range e.stdout.Lines {
-			if e.print {
-				if e.logger != nil {
-					e.logger.Logln(" >" + line)
-				} else {
-					fmt.Println(line)
-				}
-			}
-		}
-	}()
-
-	go func() {
-		for line := range e.stderr.Lines {
-			if e.print {
-				if e.logger != nil {
-					e.logger.Logln(" >" + line)
-				} else {
-					fmt.Println(line)
-				}
-			}
-		}
-	}()
-
 	cmd := exec.Command(e.binary, e.args...)
 	cmd.Stdin = e.stdin
 	cmd.Stdout = e.stdout
@@ -72,6 +48,22 @@ func (e *Command) Execute() {
 		cmd.Stdout = os.Stdout
 		cmd.Stderr = os.Stderr
 		cmd.Stdin = os.Stdin
+	} else {
+		go func() {
+			for line := range e.stdout.Lines {
+				if e.logger != nil {
+					e.logger.doLogln(e.logLevel, " >"+line)
+				}
+			}
+		}()
+
+		go func() {
+			for line := range e.stderr.Lines {
+				if e.logger != nil {
+					e.logger.doLogln(e.logLevel, " >"+line)
+				}
+			}
+		}()
 	}
 
 	env := e.project.GetEnvironment()
@@ -142,7 +134,7 @@ func NewCommand(binary string) *Command {
 		exitCode: -1,
 		executed: false,
 		logger:   nil,
-		print:    false,
+		logLevel: 3, // default log level is info
 	}
 }
 
@@ -156,8 +148,9 @@ func (e *Command) WithArgs(args ...string) *Command {
 	return e
 }
 
-func (e *Command) WithLogger(logger *Logger) *Command {
+func (e *Command) WithLogger(logger *BaseLogger) *Command {
 	e.logger = logger
+
 	return e
 }
 
@@ -166,8 +159,14 @@ func (e *Command) WithProject(p *project.Project) *Command {
 	return e
 }
 
-func (e *Command) WithPrintOutput(p bool) *Command {
-	e.print = p
+// WithLogLevel sets the log level for the command execution.
+// 1: error
+// 2: warning
+// 3: info (default)
+// 4: debug
+// 5: trace
+func (e *Command) WithLogLevel(logLevel int) *Command {
+	e.logLevel = logLevel
 	return e
 }
 

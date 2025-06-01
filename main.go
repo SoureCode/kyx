@@ -13,6 +13,7 @@ import (
 	"github.com/SoureCode/kyx/tools"
 	"github.com/pkg/errors"
 	"github.com/symfony-cli/console"
+	"github.com/symfony-cli/terminal"
 )
 
 var (
@@ -36,6 +37,10 @@ func main() {
 	cmds := append(commands.GetCommands(), tools.GetCommands(toolsMapping)...)
 	cmds = append(cmds, tools.CreateCommand("test"))
 	toolNames := tools.GetNames(toolsMapping)
+
+	p := project.GetProject()
+	logger := shell.GetLogger()
+	logger.AddHandler(shell.NewFileLogHandler(filepath.Join(p.GetDirectory(), "var", "log", "kyx.log")))
 
 	args := os.Args
 
@@ -84,6 +89,11 @@ func main() {
 		Usage:     "kyx [command] [options]",
 		Copyright: fmt.Sprintf("(c) 2025-%d Jason Schilling", time.Now().Year()),
 		Commands:  cmds,
+		Before: func(context *console.Context) error {
+			shell.GetConsoleLogHandler().SetLogLevel(terminal.GetLogLevel())
+
+			return nil
+		},
 		Action: func(ctx *console.Context) error {
 			if ctx.Args().Len() == 0 {
 				return commands.WelcomeAction(ctx)
