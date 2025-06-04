@@ -37,7 +37,7 @@ func WriteDeploymentInfo(repo string) {
 		os.Exit(1)
 	}
 
-	deploymentInfo["git_commit"] = strings.TrimSpace(cmd.Stdout())
+	deploymentInfo["GIT_COMMIT"] = strings.TrimSpace(cmd.Stdout())
 
 	if err := php.WriteFileDump(deploymentFile, deploymentInfo); err != nil {
 		logger.Errorln("Error writing deployment info:", err)
