@@ -8,6 +8,7 @@ import (
 
 type Environment struct {
 	variables map[string]string
+	directory string
 }
 
 func (e *Environment) Lookup(key string) (string, bool) {
@@ -59,7 +60,7 @@ func (e *Environment) Environ() []string {
 	return env
 }
 
-func NewEnvironment(directory string) (*Environment, error) {
+func load(directory string) (map[string]string, error) {
 	envMap := map[string]string{}
 
 	err := loadFile(envMap, directory, ".env")
@@ -102,7 +103,28 @@ func NewEnvironment(directory string) (*Environment, error) {
 		return nil, errors.Wrap(err, "failed to load PHP environment file")
 	}
 
+	return envMap, nil
+}
+
+func (e *Environment) Reload() {
+	newEnv, err := load(e.directory)
+
+	if err != nil {
+		panic(errors.Wrap(err, "failed to reload environment variables"))
+	}
+
+	e.variables = newEnv
+}
+
+func NewEnvironment(directory string) (*Environment, error) {
+	envMap, err := load(directory)
+
+	if err != nil {
+		return nil, errors.Wrap(err, "failed to load environment variables")
+	}
+
 	return &Environment{
+		directory: directory,
 		variables: envMap,
 	}, nil
 }

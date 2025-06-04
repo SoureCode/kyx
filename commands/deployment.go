@@ -32,6 +32,8 @@ var deploymentCommand = &console.Command{
 			macro.WriteDeploymentInfo(repo)
 		}
 
+		env.Reload()
+
 		macro.ComposerInstall()
 		macro.CheckRequirements()
 		macro.ComposerDumpEnv()
