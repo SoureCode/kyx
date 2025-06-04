@@ -69,11 +69,7 @@ func HasProject() bool {
 	composerPath := filepath.Join(directory, "composer.json")
 	_, err = loadComposerJson(composerPath)
 
-	if err != nil {
-		return false
-	}
-
-	return true
+	return err == nil
 }
 
 func (p *Project) HasDependency(dependency string) bool {

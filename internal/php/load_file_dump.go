@@ -3,12 +3,13 @@ package php
 import (
 	"bytes"
 	"fmt"
-	"github.com/joho/godotenv"
-	"github.com/pkg/errors"
 	"os"
 	"os/exec"
 	"path/filepath"
 	"strings"
+
+	"github.com/joho/godotenv"
+	"github.com/pkg/errors"
 )
 
 func LoadFileDump(f string) (map[string]string, error) {

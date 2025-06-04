@@ -3,11 +3,14 @@ package php
 import (
 	"os"
 	"strings"
+
+	"github.com/pkg/errors"
 )
 
 func WriteFileDump(file string, data map[string]string) error {
 	content := formatData(data)
-	return os.WriteFile(file, []byte(content), 0644)
+	err := os.WriteFile(file, []byte(content), 0644)
+	return errors.Wrap(err, "failed to write data to file")
 }
 
 func formatData(data map[string]string) string {

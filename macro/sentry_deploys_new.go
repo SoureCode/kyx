@@ -2,12 +2,13 @@ package macro
 
 import (
 	"fmt"
-	"github.com/SoureCode/kyx/project"
-	"github.com/SoureCode/kyx/shell"
 	"os"
 	"path/filepath"
 	"strings"
 	"time"
+
+	"github.com/SoureCode/kyx/project"
+	"github.com/SoureCode/kyx/shell"
 )
 
 func SentryDeploysNew(repo string, startedAt, stoppedAt time.Time) {
@@ -38,9 +39,7 @@ func SentryDeploysNew(repo string, startedAt, stoppedAt time.Time) {
 		return
 	}
 
-	if strings.HasSuffix(sentryUrl, "/") {
-		sentryUrl = strings.TrimSuffix(sentryUrl, "/")
-	}
+	sentryUrl = strings.TrimSuffix(sentryUrl, "/")
 
 	sentryOrg, ok := env.Lookup("SENTRY_ORG")
 	if !ok {

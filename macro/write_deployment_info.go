@@ -1,12 +1,13 @@
 package macro
 
 import (
-	"github.com/SoureCode/kyx/internal/php"
-	"github.com/SoureCode/kyx/project"
-	"github.com/SoureCode/kyx/shell"
 	"os"
 	"path/filepath"
 	"strings"
+
+	"github.com/SoureCode/kyx/internal/php"
+	"github.com/SoureCode/kyx/project"
+	"github.com/SoureCode/kyx/shell"
 )
 
 func WriteDeploymentInfo(repo string) {

@@ -73,7 +73,7 @@ func (e *Command) Execute() error {
 	if err := cmd.Start(); err != nil {
 		fmt.Fprintln(os.Stderr, err)
 		e.exitCode = 1
-		return err
+		return errors.Wrap(err, "failed to start command")
 	}
 
 	waitChannel := make(chan error, 1)
@@ -122,8 +122,6 @@ func (e *Command) Execute() error {
 			}
 		}
 	}
-
-	return nil
 }
 
 func NewCommand(binary string) *Command {

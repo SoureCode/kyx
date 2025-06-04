@@ -1,8 +1,9 @@
 package env
 
 import (
-	"github.com/pkg/errors"
 	"os"
+
+	"github.com/pkg/errors"
 )
 
 type Environment struct {

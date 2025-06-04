@@ -1,9 +1,9 @@
 package env
 
 import (
-	"github.com/SoureCode/kyx/internal/php"
 	"path/filepath"
 
+	"github.com/SoureCode/kyx/internal/php"
 	"github.com/pkg/errors"
 )
 
