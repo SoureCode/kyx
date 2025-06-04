@@ -83,11 +83,13 @@ func (l *BaseLogger) getDelta(t time.Time) string {
 	return fmt.Sprintf("+%02d:%02d.%03d", minutes, seconds, milliseconds)
 }
 
-func (l *BaseLogger) LogDuration() {
+func (l *BaseLogger) LogDuration() (time.Time, time.Time) {
 	now := l.now()
 	d := now.Sub(firstTimestamp)
 
 	l.Logln("Total duration: ", d.String())
+
+	return firstTimestamp, now
 }
 
 func wrapInBrackets(s string) string {

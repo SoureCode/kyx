@@ -12,11 +12,16 @@ var singletonProject *Project
 
 func GetProject() *Project {
 	if singletonProject == nil {
-		directory := getDirectory()
+		directory, err := getDirectory()
+
+		if err != nil {
+			panic(errors.Wrap(err, "failed to get project directory"))
+		}
+
 		project, err := newProject(directory)
 
 		if err != nil {
-			panic(err)
+			panic(errors.Wrap(err, "failed to create project"))
 		}
 
 		singletonProject = project
@@ -34,7 +39,6 @@ type Project struct {
 
 func newProject(directory string) (*Project, error) {
 	composerPath := filepath.Join(directory, "composer.json")
-
 	composerData, err := loadComposerJson(composerPath)
 
 	if err != nil {
@@ -53,6 +57,23 @@ func newProject(directory string) (*Project, error) {
 		devDependencies: composerData.GetDevDependencies(),
 		environment:     environment,
 	}, nil
+}
+
+func HasProject() bool {
+	directory, err := getDirectory()
+
+	if err != nil {
+		return false
+	}
+
+	composerPath := filepath.Join(directory, "composer.json")
+	_, err = loadComposerJson(composerPath)
+
+	if err != nil {
+		return false
+	}
+
+	return true
 }
 
 func (p *Project) HasDependency(dependency string) bool {

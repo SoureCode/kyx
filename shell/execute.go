@@ -84,3 +84,23 @@ func NewDockerCommand(args ...string) *Command {
 
 	return NewCommand(binary).WithArgs(args...)
 }
+
+func NewSentryCommand(args ...string) *Command {
+	binary, err := exec.LookPath("sentry-cli")
+
+	if err != nil {
+		panic(errors.Wrap(err, "could not find sentry-cli binary"))
+	}
+
+	return NewCommand(binary).WithArgs(args...)
+}
+
+func NewGitCommand(args ...string) *Command {
+	binary, err := exec.LookPath("git")
+
+	if err != nil {
+		panic(errors.Wrap(err, "could not find git binary"))
+	}
+
+	return NewCommand(binary).WithArgs(args...)
+}

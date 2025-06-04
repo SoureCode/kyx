@@ -1,6 +1,7 @@
 package env
 
 import (
+	"github.com/pkg/errors"
 	"os"
 )
 
@@ -63,13 +64,13 @@ func NewEnvironment(directory string) (*Environment, error) {
 	err := loadFile(envMap, directory, ".env")
 
 	if err != nil {
-		return nil, err
+		return nil, errors.Wrap(err, "error loading environment file")
 	}
 
 	err = loadFile(envMap, directory, ".env.local")
 
 	if err != nil {
-		return nil, err
+		return nil, errors.Wrap(err, "failed to load local environment file")
 	}
 
 	envName := os.Getenv("APP_ENV")
@@ -97,7 +98,7 @@ func NewEnvironment(directory string) (*Environment, error) {
 	err = loadPHPFile(envMap, directory, ".env.local.php")
 
 	if err != nil {
-		return nil, err
+		return nil, errors.Wrap(err, "failed to load PHP environment file")
 	}
 
 	return &Environment{

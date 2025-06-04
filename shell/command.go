@@ -27,7 +27,7 @@ type Command struct {
 	passthrough bool
 }
 
-func (e *Command) Execute() {
+func (e *Command) Execute() error {
 	if e.executed {
 		panic(errors.New("execution already executed"))
 	}
@@ -73,7 +73,7 @@ func (e *Command) Execute() {
 	if err := cmd.Start(); err != nil {
 		fmt.Fprintln(os.Stderr, err)
 		e.exitCode = 1
-		return
+		return err
 	}
 
 	waitChannel := make(chan error, 1)
@@ -94,7 +94,7 @@ func (e *Command) Execute() {
 			if err == nil {
 				e.stdout.CloseLines()
 				e.stderr.CloseLines()
-				return
+				return nil
 			}
 
 			if !strings.Contains(err.Error(), "exit status") {
@@ -107,7 +107,7 @@ func (e *Command) Execute() {
 				}
 			}
 
-			return
+			return err
 		case sig := <-signalChannel:
 			// this one in particular should be skipped as we don't want to
 			// send it back to child because it's about it
@@ -122,6 +122,8 @@ func (e *Command) Execute() {
 			}
 		}
 	}
+
+	return nil
 }
 
 func NewCommand(binary string) *Command {
@@ -188,9 +190,9 @@ func (e *Command) Stderr() string {
 }
 
 func (e *Command) Run() error {
-	e.Execute()
+	err := e.Execute()
 
-	if e.ExitCode() != 0 {
+	if err != nil {
 		return errors.Wrapf(
 			errors.New(e.Stderr()),
 			"command '%s %s' failed with exit code %d",

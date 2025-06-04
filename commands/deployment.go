@@ -11,12 +11,25 @@ import (
 var deploymentCommand = &console.Command{
 	Name:        "deployment",
 	Description: "Deploy the application",
-	Action: func(c *console.Context) error {
+	Args: []*console.Arg{
+		{
+			Name:        "repository",
+			Description: "The repository to read the release information from.",
+			Optional:    true,
+		},
+	},
+	Action: func(ctx *console.Context) error {
 		p := project.GetProject()
 		env := p.GetEnvironment()
 
 		if !env.IsProd() {
 			return errors.New("Deployment can only be run in production environment")
+		}
+
+		repo := ctx.Args().Get("repository")
+
+		if repo != "" {
+			macro.WriteDeploymentInfo(repo)
 		}
 
 		macro.ComposerInstall()
@@ -39,7 +52,11 @@ var deploymentCommand = &console.Command{
 		// start
 		macro.SoureCodeScreenStart()
 
-		shell.GetLogger().LogDuration()
+		start, stop := shell.GetLogger().LogDuration()
+
+		if repo != "" {
+			macro.SentryDeploysNew(repo, start, stop)
+		}
 
 		return nil
 	},

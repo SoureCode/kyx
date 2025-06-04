@@ -1,7 +1,9 @@
 package shell
 
+import "time"
+
 type Logger interface {
-	LogDuration()
+	LogDuration() (time.Time, time.Time)
 
 	doLog(level int, args ...any)
 	doLogln(level int, args ...any)

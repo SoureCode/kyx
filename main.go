@@ -33,13 +33,13 @@ var (
 	}
 )
 
-func configureLogFile() {
-	p := project.GetProject()
-	logger := shell.GetLogger()
-	logger.AddHandler(shell.NewFileLogHandler(filepath.Join(p.GetDirectory(), "var", "log", "kyx.log")))
-}
-
 func main() {
+	if project.HasProject() {
+		p := project.GetProject()
+		logger := shell.GetLogger()
+		logger.AddHandler(shell.NewFileLogHandler(filepath.Join(p.GetDirectory(), "var", "log", "kyx.log")))
+	}
+
 	cmds := append(commands.GetCommands(), tools.GetCommands(toolsMapping)...)
 	cmds = append(cmds, tools.CreateCommand("test"))
 	toolNames := tools.GetNames(toolsMapping)
@@ -47,7 +47,6 @@ func main() {
 	args := os.Args
 
 	if len(args) >= 2 && slices.Contains(toolNames, args[1]) {
-		configureLogFile()
 		cmd := tools.NewToolCommand(args[1], toolsMapping, args[2:]...)
 
 		if err := cmd.Run(); err != nil {
@@ -59,7 +58,6 @@ func main() {
 	}
 
 	if len(args) >= 2 && args[1] == "test" {
-		configureLogFile()
 		p := project.GetProject()
 		pd := p.GetDirectory()
 
@@ -95,10 +93,6 @@ func main() {
 		Commands:  cmds,
 		Before: func(ctx *console.Context) error {
 			shell.GetConsoleLogHandler().SetLogLevel(terminal.GetLogLevel())
-
-			if ctx.Command != nil {
-				configureLogFile()
-			}
 
 			return nil
 		},
